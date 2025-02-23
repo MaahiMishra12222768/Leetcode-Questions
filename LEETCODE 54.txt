@@ -1,0 +1,54 @@
+LEETCODE 54 
+SPRIAL MATRIX 
+Asked many times in amazon interview 
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& arr) {
+        int row = arr.size();
+        int col = arr[0].size();
+        vector<int> ans ; 
+
+
+        //indexes
+        int startingrow = 0 ; 
+        int endingrow = row - 1 ; 
+        int startingcol = 0 ; 
+        int endingcol = col - 1 ; 
+        int count = 0 ; 
+        int total = row*col ; 
+        while(count< total )
+        {
+            //for printing the starting row 
+            for(int i =  startingcol ; count<total && i <=endingcol; i++){
+                ans.push_back(arr[startingrow][i]);
+                count++;
+            }
+            startingrow++;
+
+            //for printing the ending col 
+            for(int i = startingrow ; count<total && i<=endingrow;i++){
+                ans.push_back(arr[i][endingcol]);
+                count++;
+            }
+            endingcol--;
+
+
+            //for printing the ending row 
+            for(int i = endingcol ; count<total && i>=startingcol ; i--){
+                ans.push_back(arr[endingrow][i]);
+                count++;
+            }
+            endingrow--;
+
+            //for printing the starting col 
+            for(int i = endingrow ; count<total && i >=startingrow ; i--){
+                ans.push_back(arr[i][startingcol]);
+                count++;
+            }
+            startingcol++;
+        }
+
+        return ans ; 
+    }
+};

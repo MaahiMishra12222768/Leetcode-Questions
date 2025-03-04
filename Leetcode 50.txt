@@ -1,0 +1,23 @@
+Leetcode 50 
+
+compute x^ n using binary expontitaion 
+
+class Solution {
+public:
+    double myPow(double x, int n) {
+         unsigned int binaryform = n ; 
+        double ans = 1 ; 
+        if(n<0){
+            x = 1/x ; 
+            binaryform =  (-binaryform) ; 
+        }
+        while(binaryform>0){
+            if(binaryform %2==1){
+                ans = ans * x ; 
+            }
+                x = x*x;
+            binaryform /= 2; 
+        }
+    return ans ; 
+    }
+};

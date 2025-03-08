@@ -1,0 +1,39 @@
+Leetcode 852
+
+BRUTE FORCE APPROACH 
+class Solution {
+public:
+    int peakIndexInMountainArray(vector<int>& arr) {
+        int n = arr.size(); int ans=0;
+        int st = 0 ; int end = n -1 ; 
+        for(int i = 0 ; i < n ; i++){
+            if(arr[i]< arr[i+1] && arr[i+1]>arr[i+2]){
+                return i+1;
+            }
+        }
+        return -1 ; 
+    }
+};
+
+
+BINARY SEARCH APPROACH 
+
+class Solution {
+public:
+    int peakIndexInMountainArray(vector<int>& a) {
+        int st = 1 ; int end = a.size()-2;
+        while(st <= end){
+            int mid = st + ( end - st )/2;
+            if(a[mid]> a[mid+1] && a[mid]>a[mid-1]){
+                return mid ;
+            }
+            else if ( a[mid]> a[mid-1]){
+                st = mid +1;
+            }
+            else{
+                end = mid-1;
+            }
+        }
+        return -1 ; 
+    }
+};

@@ -1,0 +1,14 @@
+LEETCODE  485 
+
+class Solution {
+public:
+    int findMaxConsecutiveOnes(vector<int>& nums) {
+        int ans = 0, currOne = 0;
+        for (auto i : nums) {
+            if (i == 1) currOne++;
+            else currOne = 0;
+            ans = max(ans, currOne);
+        }
+        return ans;
+    }
+};

@@ -1,0 +1,21 @@
+Leetcode : 11. Contain with most area
+
+
+class Solution {
+public:
+    int maxArea(vector<int>& heights) {
+        int area=0;
+        int l = 0 ;
+        int r = heights.size()-1;
+
+        while(l<r){
+            int curr_area=(r-l)* min(heights[l],heights[r]);
+            area=max(area,curr_area);
+
+            if (heights[l]>heights[r]){r--;}
+            else {l++;}
+        }
+        return area;
+        //return area ; 
+    }
+};

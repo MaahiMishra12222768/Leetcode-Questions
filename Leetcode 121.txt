@@ -1,0 +1,19 @@
+Leetcode 121 
+
+class Solution {
+public:
+    int maxProfit(vector<int>& price) {
+        int n = price.size();
+        int bestbuy = price[0];
+        int maxprofit = 0 ; 
+        for(int i = 1 ; i < n; i++){
+            if(price[i]> bestbuy){
+                maxprofit = max(maxprofit , price[i]- bestbuy );
+            }
+            bestbuy = min(price[i], bestbuy );
+        }
+        return maxprofit ;
+        }
+       
+    
+};

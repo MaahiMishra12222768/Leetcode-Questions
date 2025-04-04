@@ -1,0 +1,30 @@
+LEETCODE - 796. Rotate String
+
+Brute force approach 
+
+time complexity - O(n2)
+class Solution {
+public:
+    bool rotateString(string s, string goal) {
+        if(s.length() != goal.length()) return false;
+        int length = s.length();
+        for(int rotatecount = 0 ; rotatecount < length ; rotatecount++){
+            rotate(s.begin() , s.begin()+1 , s.end());
+            if(s==goal) return true;
+        }
+        return false;
+    }
+};
+
+Optimized approach 
+time complexity - O(n)
+
+class Solution {
+public:
+    bool rotateString(string s, string goal) {
+        if(s.length() != goal.length()) return false;
+        string doubledstring = s+s ; 
+        return doubledstring.find(goal)< doubledstring.length();
+    }
+};
+

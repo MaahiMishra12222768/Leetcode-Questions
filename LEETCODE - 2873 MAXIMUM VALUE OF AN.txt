@@ -1,0 +1,43 @@
+LEETCODE - 2873 MAXIMUM VALUE OF AN ORDERED TRIPLET I 
+
+
+BRUTE FORCE APPROACH 
+TIME COMPLEXITY - O(n^3)
+class Solution {
+public:
+    long long maximumTripletValue(vector<int>& nums) {
+        long long maxi = 0 ; 
+        for(int i = 0 ; i < nums.size(); i++){
+            
+            for(int j = i+1; j < nums.size(); j++){
+                for(int k = j+1 ; k < nums.size(); k++){
+                    
+                    maxi = max(maxi , (long long)(nums[i]- nums[j])*nums[k]);
+                }
+
+            }
+        }
+        return maxi;
+        
+    }
+};
+
+GREDDY APPROACH 
+TIME COMPLEXITY - O(n^2)
+//using the technique that we can get the maximum value when I is maximum which is clear with the formula 
+
+class Solution {
+public:
+    long long maximumTripletValue(vector<int>& nums) {
+        long long maxi = 0 ; 
+        for(int k = 2 ; k < nums.size() ; k++){
+            int maxvaluefori = nums[0];
+            for(int j=1; j < k ; j++){
+                maxi = max(maxi , (long long)(maxvaluefori - nums[j])*nums[k]);
+                maxvaluefori = max(maxvaluefori , nums[j]);
+            }
+        }
+        return maxi ; 
+    }
+};
+

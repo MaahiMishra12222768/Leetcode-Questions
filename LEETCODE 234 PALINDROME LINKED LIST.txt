@@ -1,0 +1,40 @@
+LEETCODE 234 PALINDROME LINKED LIST 
+
+//first we find the mid using fast and slow pointers then we reverse the last half and campare the values 
+
+
+class Solution {
+public:
+ListNode* reverse(ListNode* head){
+    ListNode* prev = nullptr;
+    ListNode* cur = head;
+    while(cur != nullptr){
+        ListNode* next = cur->next;
+        cur->next = prev;
+        prev = cur;
+        cur = next ;
+    }
+    return prev ;
+
+}
+bool isPalindrome(ListNode* head) {
+        ListNode* slow = head ; 
+        ListNode * fast = head ; 
+        while(fast != NULL && fast->next !=NULL){
+            slow = slow->next ; 
+            fast = fast->next->next;
+        }
+        ListNode * rev = reverse(slow);
+        while(rev != nullptr){
+            if(rev->val != head->val){
+                return false;
+            }
+            head = head->next;
+            rev = rev->next;
+
+        }
+        return true;
+
+        
+    }
+};

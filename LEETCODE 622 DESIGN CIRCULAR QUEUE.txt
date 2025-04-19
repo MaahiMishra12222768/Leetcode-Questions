@@ -1,0 +1,52 @@
+LEETCODE 622 DESIGN CIRCULAR QUEUE
+
+class MyCircularQueue {
+public:
+vector < int> arr;
+int size , capacity , front , rear;
+    MyCircularQueue(int k) {
+        size = 0 ; 
+        capacity = k ; 
+        front = 0 ; 
+        arr.resize(k);
+        rear = - 1 ; 
+        front = 0 ; 
+
+        
+    }
+    
+    bool enQueue(int value) {
+        if(isFull()) return false;
+        rear = (rear+1)%capacity ;  size++;
+        arr[rear]= value ; 
+        return true ; 
+        
+    }
+    
+    bool deQueue() {
+        if(isEmpty()) return false;
+        front = (front +1)%capacity ; 
+        size--;
+        return true ; 
+
+        
+    }
+    
+   
+    bool isEmpty() {
+        return size==0;
+        
+    }
+    
+    bool isFull() {
+        return size == capacity ; 
+    }
+     int Front() {
+        return isEmpty()? -1 : arr[front];
+    }
+    
+    int Rear() {
+        return isEmpty()? -1: arr[rear];
+    }
+    
+};

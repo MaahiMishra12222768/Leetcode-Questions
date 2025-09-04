@@ -1,0 +1,7 @@
+class Solution {
+public:
+    int findClosest(int x, int y, int z) {
+        int d=x*x-y*y-2*z*(x-y);
+        return (d==0)?0:1<<(d>0);
+    }
+};

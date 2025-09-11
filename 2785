@@ -1,0 +1,27 @@
+class Solution {
+    bool vowels(char ch){
+        return (ch=='a' || ch=='e' || ch=='i' || ch=='o' || ch=='u'|| ch=='A' || ch=='E' || ch=='I' || ch=='O' || ch=='U');
+    }
+public:
+    string sortVowels(string s) {
+        vector<char>r;
+        for (char c:s){
+            if (vowels(c)){
+                r.push_back(c);
+            }
+        }
+        sort(r.begin(),r.end());
+        string res="";
+        int i=0;
+        for (char c: s){
+            if (!vowels(c)){
+                res+=c;
+            }else{
+                res+=r[i];
+                i++;
+            }
+
+        }
+        return res;
+    }
+};

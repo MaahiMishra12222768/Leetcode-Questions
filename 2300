@@ -1,0 +1,22 @@
+class Solution {
+public:
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
+        sort(potions.begin(),potions.end());
+        int n=spells.size();
+       for(int i=0;i<n;i++){
+        int left=0,right=potions.size();
+        int spell=spells[i];
+        while(left<right){
+           int mid=(left+right)/2;
+           if(1LL*spell*potions[mid]<success){
+            left=mid+1;
+           }else{
+            right=mid;
+           }
+          
+        }
+        spells[i]=potions.size()-left; 
+       }
+        return spells;
+    }
+};

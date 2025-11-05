@@ -1,0 +1,88 @@
+class Solution {
+public:
+    vector<long long> findXSum(vector<int>& a, int k, int X) {
+        vector<long long>ans;
+        multiset<pair<int,int>>s;
+        multiset<pair<int,int>>deleted;
+        // no of times it occured , it's value
+        int n = (int)a.size();
+        int l = 0;
+        map<int,int>mp;
+        long long curr = 0;
+        for(int i = 0 ; i < n ; i++) {
+            if(i >= k) {
+                int times = mp[a[l]];
+                int v = a[l];
+                if(s.find({times,v}) != s.end()) {
+                    curr -= (times *1LL* v);
+                    s.erase(s.find({times,v}));
+                    mp[a[l]]--;
+                    times--;
+                    curr += (times *1LL* v);
+                    s.insert({times,v});
+                } else if(deleted.find({times,v}) != deleted.end()) {
+                    deleted.erase(deleted.find({times,v}));
+                    mp[a[l]]--;
+                    times--;
+                    deleted.insert({times,v});
+                } else {
+                 mp[a[l]]--;
+                 times--;
+                 s.insert({times,v});
+                }
+                l++;
+            }
+            if(mp.find(a[i]) == mp.end()) {
+             mp[a[i]]++;
+             s.insert({mp[a[i]],a[i]});
+             curr += a[i];   
+            } else {
+             int times = mp[a[i]];
+             if(s.find({times,a[i]}) != s.end()) {
+                curr -= (times *1LL * a[i]);
+                s.erase(s.find({times,a[i]}));
+                mp[a[i]]++;
+                times++;
+                s.insert({times,a[i]});
+                curr += (times *1LL* a[i]);
+             } else if(deleted.find({times,a[i]}) != deleted.end()) {
+                deleted.erase(deleted.find({times,a[i]}));
+                mp[a[i]]++;
+                times++;
+                deleted.insert({times,a[i]});
+             } else {
+                mp[a[i]]++;
+                times++;
+                s.insert({times,a[i]});
+                curr += (times *1LL* a[i]);
+             }
+            }
+            while((int)s.size() > X) {
+                int xx = s.begin()->first;
+                int yy = s.begin()->second;
+                curr -= xx*1LL*yy;
+                s.erase(s.find({xx,yy}));
+                deleted.insert({xx,yy});
+            }
+            while(!deleted.empty() && deleted.rbegin()->first >= s.begin()->first) {
+                if(deleted.rbegin()->first == s.begin()->first && deleted.rbegin()->second <= s.begin()->second) {
+                    break;
+                }
+                int ax = deleted.rbegin()->first;
+                int ay = deleted.rbegin()->second;
+                int dx = s.begin()->first;
+                int dy = s.begin()->second;
+                curr -= dx*1LL*dy;
+                curr += ax*1LL*ay;
+                s.erase(s.find({dx,dy}));
+                s.insert({ax,ay});
+                deleted.erase(deleted.find({ax,ay}));
+                deleted.insert({dx,dy});
+            }
+            if(i >= k-1) {
+                ans.push_back(curr);
+            }
+        }
+        return ans;
+    }
+};

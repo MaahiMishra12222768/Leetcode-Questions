@@ -1,0 +1,105 @@
+class DisjointSet{
+  public:
+  vector<int> parent,size;
+  DisjointSet(int n){
+      parent.resize(n);
+      size.resize(n);
+      for(int i=0;i<n;i++){
+          parent[i] = i;
+          size[i] = 1;
+      }
+  }
+  
+  int getParent(int u){
+      if(parent[u]==u) return u;
+      return parent[u] = getParent(parent[u]);
+  }
+  
+  void unionBySize(int u, int v){
+      int uP = getParent(u), vP = getParent(v);
+      if(uP==vP) return;
+      if(size[uP]<size[vP]){
+          size[vP]+=size[uP];
+          parent[uP] = vP;
+      }else{
+          size[uP]+=size[vP];
+          parent[vP] = uP;
+      }
+  }
+  
+};
+
+class Solution {
+  public:
+  
+    void helper(vector<int> arr, int &first, int &second) {
+        for(int i=0;i<arr.size();i++){
+          //  cout<<arr[i]<<" ";
+            if(arr[i]>first){
+                second = first;
+                first = arr[i];
+            }else if(arr[i]>second && arr[i]!=first) {
+                second = arr[i];
+            }
+        }//cout<<endl;
+       // cout<<"first: "<<first<<" second: "<<second<<endl;
+    }
+  
+    void dfs(vector<vector<int>> adj[], int i,int par, vector<int> &vis, int &first, int &second, vector<int> &arr) {
+        vis[i] = 1;
+        for(vector<int> p : adj[i]){
+            int j = p[0], wt = p[1];
+            arr.push_back(wt);
+            if(!vis[j]) {
+                dfs(adj,j,i,vis,first,second,arr);
+            }else if(j!=par) {
+                helper(arr,first,second);
+            }
+            if(second!=-1) return;
+            arr.pop_back();
+        }
+        vis[i] = 0;
+    }
+  
+    int secondMST(int V, vector<vector<int>> &edges) {
+        // code here
+        vector<vector<int>> adj[V];
+        int ans = 0;
+        priority_queue<vector<int>,vector<vector<int>>,greater<vector<int>>> pq;
+        for(vector<int> e: edges) {
+            pq.push({e[2],e[0],e[1]});
+        }
+    
+        DisjointSet ds(V);
+        int mini = INT_MAX;
+        
+        while(!pq.empty()){
+            vector<int> p = pq.top();
+            pq.pop();
+            int wt = p[0], u = p[1], v = p[2];
+            int uP = ds.getParent(u), vP = ds.getParent(v);
+            if(uP!=vP) {
+                ds.unionBySize(u,v);
+                ans+=wt;
+                adj[u].push_back({v,wt});
+                adj[v].push_back({u,wt});
+            }else{
+                vector<int> vis(V,0);
+                adj[u].push_back({v,wt});
+                adj[v].push_back({u,wt});
+                int first = -1, second = -1;
+                vector<int> arr;
+                dfs(adj,u,-1,vis,first,second,arr);
+                if(second!=-1) {
+                  //  cout<<second<<endl;
+                    mini = min(mini, wt-second);
+                }
+                adj[u].pop_back();
+                adj[v].pop_back();
+            }
+        }
+        if(mini==INT_MAX) return -1;
+       // cout<<ans<<" "<<mini<<endl;
+        return ans+mini;
+    }
+};

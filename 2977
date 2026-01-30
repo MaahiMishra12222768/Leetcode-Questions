@@ -1,0 +1,90 @@
+class Solution {
+public:
+    void dijkstra(int src, vector<vector<pair<int,int>>>& adj,
+                  vector<vector<long long>>& dist) {
+
+        priority_queue<pair<long long,int>,
+                       vector<pair<long long,int>>,
+                       greater<>> pq;
+
+        dist[src][src] = 0;
+        pq.push({0, src});
+
+        while (!pq.empty()) {
+            auto [d, u] = pq.top();
+            pq.pop();
+
+            if (d > dist[src][u]) continue;
+
+            for (auto &[v, w] : adj[u]) {
+                if (dist[src][v] > d + w) {
+                    dist[src][v] = d + w;
+                    pq.push({dist[src][v], v});
+                }
+            }
+        }
+    }
+
+    long long minimumCost(string source, string target,
+                          vector<string>& original,
+                          vector<string>& changed,
+                          vector<int>& cost) {
+
+        // ---- Map strings to ids ----
+        unordered_map<string,int> mp;
+        int id = 0;
+        for (int i = 0; i < original.size(); i++) {
+            if (!mp.count(original[i])) mp[original[i]] = id++;
+            if (!mp.count(changed[i]))  mp[changed[i]]  = id++;
+        }
+
+        // ---- Build graph ----
+        vector<vector<pair<int,int>>> adj(id);
+        for (int i = 0; i < original.size(); i++) {
+            int u = mp[original[i]];
+            int v = mp[changed[i]];
+            adj[u].push_back({v, cost[i]});
+        }
+
+        // ---- All-pairs shortest paths (Dijkstra from each node) ----
+        vector<vector<long long>> dist(id, vector<long long>(id, 1e18));
+        for (int i = 0; i < id; i++) {
+            dijkstra(i, adj, dist);
+        }
+
+        // ---- Precompute valid substring lengths ----
+        unordered_set<int> lens;
+        for (auto &s : original) lens.insert(s.size());
+
+        int n = source.size();
+        vector<long long> dp(n + 1, 1e18);
+        dp[n] = 0;
+
+        // ---- DP ----
+        for (int i = n - 1; i >= 0; i--) {
+
+            // Case 1: no operation
+            if (source[i] == target[i]) {
+                dp[i] = dp[i + 1];
+            }
+
+            // Case 2: substring conversions
+            for (int len : lens) {
+                int j = i + len - 1;
+                if (j >= n) continue;
+
+                string from = source.substr(i, len);
+                string to   = target.substr(i, len);
+
+                if (!mp.count(from) || !mp.count(to)) continue;
+
+                long long c = dist[mp[from]][mp[to]];
+                if (c < 1e18) {
+                    dp[i] = min(dp[i], c + dp[j + 1]);
+                }
+            }
+        }
+
+        return dp[0] >= 1e18 ? -1 : dp[0];
+    }
+};

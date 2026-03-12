@@ -1,0 +1,68 @@
+struct DSU {
+    vector<int> p, sz;
+    int c;
+    DSU(int n) {
+        p.resize(n);
+        sz.resize(n, 1);
+        iota(p.begin(), p.end(), 0);
+        c = n;
+    }
+    int f(int i) {
+        if (p[i] == i) return i;
+        return p[i] = f(p[i]);
+    }
+    bool u(int i, int j) {
+        int x = f(i);
+        int y = f(j);
+        if (x != y) {
+            if (sz[x] < sz[y]) swap(x, y);
+            p[y] = x;
+            sz[x] += sz[y];
+            c--;
+            return true;
+        }
+        return false;
+    }
+};
+class Solution {
+public:
+    int maxStability(int n, vector<vector<int>>& edges, int k) {
+        DSU g(n);
+        for (auto &e : edges) g.u(e[0], e[1]);
+        if (g.c > 1) return -1;
+        DSU b(n);
+        int m = 2e9; 
+        vector<pair<int, pair<int, int>>> o;
+        for (auto &e : edges) {
+            if (e[3] == 1) {
+                m = min(m, e[2]);
+                if (!b.u(e[0], e[1])) return -1;
+            } else o.push_back({e[2], {e[0], e[1]}});
+            
+        }
+        auto isOk = [&](int t, DSU d) {
+            for (auto &e : o) {
+                if (e.first >= t) {
+                    d.u(e.second.first, e.second.second);
+                }
+            }
+            int u = 0;
+            for (auto &e : o) {
+                if (e.first < t && 2 * e.first >= t) {
+                    if (d.u(e.second.first, e.second.second)) {
+                        u++;
+                    }
+                }
+            }
+            return d.c == 1 && u <= k;
+        };
+        int l = -1;
+        int h = min(200000, m) + 1; 
+        while (h - l > 1) {
+            int mid = l + (h - l) / 2;
+            if (isOk(mid, b)) l = mid;
+            else h = mid;
+        }
+        return l;
+    }
+};

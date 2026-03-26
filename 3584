@@ -1,0 +1,104 @@
+// 1d flat array version
+static const int M=1e5+1;
+static int A[M];
+static bitset<M> Seen;
+
+class Solution {
+public:
+    static bool canPartitionGrid(vector<vector<int>>& grid) {
+        const int r=grid.size(), c=grid[0].size(), N=r*c;
+        long long Tsum=0;
+        
+        Seen.reset();
+        int idx=0;
+        for(auto& row: grid){
+            memcpy(A+idx, row.data(), sizeof(int)*c);
+            idx+=c;
+        }
+
+        int xMax=0;
+        for (int i=0; i<N; i++) {
+            const int x=A[i];
+            Tsum+=x;
+            xMax=max(x, xMax);
+            
+        }
+
+        // Horizontal Cuts
+        long long top=0;
+        // First pass for Top removals
+        for (int i=0; i<r-1; i++) {
+            for (int j=0; j<c; j++) {
+                const int x=A[i*c+j];
+                top+=x;
+                Seen[x]=1;
+            }
+            long long bot=Tsum-top;
+            if (top==bot) return 1;
+
+            long long d=top - bot;
+            if (d > 0 && d<=xMax) {
+                if (i>0 && c>1) { if (Seen[d]) return 1; }
+                else if (A[0]==d || A[(i+1)*c-1]==d) return 1;
+            }
+        }
+        Seen.reset();
+        long long bot=0;
+        // Second pass for Bottom removals
+        for (int i=r-1; i>=1; i--) {
+            for (int j=c-1; j>=0; j--) {
+                const int x=A[i*c+j];
+                bot+=x;
+                Seen[x]=1;
+            }
+            long long topS=Tsum-bot;
+            long long d=bot-topS;
+            if (d>0 &&d<=xMax) {
+                if ((r-1-i)>0 && c>1) { if (Seen[d]) return 1; }
+                else if (A[i*c]==d || A[N-1]==d) return 1;
+            }
+        }
+
+        // Vertical Cuts 
+        Seen.reset();
+        long long left=0;
+        for (int j=0; j<c-1; j++) {
+            for (int i=0; i<r; i++) {
+                const int x=A[i*c+j];
+                left+=x;
+                Seen[x]=1;
+            }
+            long long right=Tsum-left;
+            if (left==right) return 1;
+
+            long long d=left-right;
+            if (d>0 && d<=xMax) {
+                if (r>1 && j>0) { if (Seen[d]) return 1; } 
+                else if (A[0]==d || A[(r-1)*c+j]==d) return 1;
+            }
+        }
+        Seen.reset();
+        long long right=0;
+        for (int j=c-1; j>=1; j--) {
+            for (int i=0; i<r; i++) {
+                const int x=A[i*c+j];
+                right+=x;
+                Seen[x]=1;
+            }
+            long long leftS=Tsum-right;
+            long long d=right-leftS;
+            if (d>0 && d<=xMax) {
+                if (r>1 && (c-1-j)>0) { if (Seen[d]) return 1; } 
+                else if (A[j]==d || A[N-1]==d) return 1;
+            }
+        }
+        return 0;
+    }
+};
+
+auto init = []() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    return 'c';
+}();
